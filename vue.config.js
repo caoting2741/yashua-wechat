@@ -1,4 +1,19 @@
-const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
-  transpileDependencies: true
-})
+const pxtorem = require("postcss-pxtorem");
+module.exports = {
+  productionSourceMap: false,
+  css: {
+    loaderOptions: {
+      postcss: {
+        postcssOptions: {
+          plugins: [
+            require("autoprefixer")(),
+            pxtorem({
+              rootValue: 37.5,
+              propList: ["*"],
+            }),
+          ],
+        },
+      },
+    },
+  },
+};
