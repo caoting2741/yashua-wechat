@@ -28,6 +28,12 @@
           title="得分明细"
           :value="`${detailData.detailed.Value} 分`"
           label="左牙上区、右牙上区、左牙下区、右牙下区"
+          is-link
+          :to="`/device/areaShow?scoreDetail=${
+            detailData.detailed.Value
+          }&time=${$dayjs
+            .unix(detailData.date.Value)
+            .format('YYYY-MM-DD HH:mm:ss')}&score=${detailData.result.Value}`"
         />
         <van-cell
           title="电池电量"
@@ -56,7 +62,7 @@
   </div>
 </template>
 <script>
-import { deviceProperties,unbindDevice } from "@/api/Device";
+import { deviceProperties, unbindDevice } from "@/api/Device";
 import { Dialog, Toast } from "vant";
 import { mapGetters } from "vuex";
 export default {
@@ -87,7 +93,6 @@ export default {
             this.detailData.oldDate.value = days;
           }
         }
-        
       });
     },
     deleteDevice() {
@@ -103,7 +108,7 @@ export default {
             deviceName: this.deviceName,
           }).then(() => {
             Toast.success("设备删除成功");
-            this.getDeviceList()
+            this.getDeviceList();
           });
         })
         .catch(() => {
@@ -122,7 +127,7 @@ export default {
   min-height: calc(100vh - 56px);
   padding: 0.23rem;
 }
-.fotbtn{
+.fotbtn {
   bottom: calc(20px + env(safe-area-inset-bottom));
 }
 </style>

@@ -20,16 +20,23 @@ const routes = [
       {
         path: "list",
         component: () => import("@/views/MyDevice/MyDevice.vue"),
-        meta:{
-          title:"我的设备"
-        }
+        meta: {
+          title: "我的设备",
+        },
       },
       {
         path: "detail",
         component: () => import("@/views/DeviceDetail/DeviceDetail.vue"),
-        meta:{
-          title:"设备详情"
-        }
+        meta: {
+          title: "设备详情",
+        },
+      },
+      {
+        path: "areaShow",
+        component: () => import("@/views/DeviceArea/DeviceArea.vue"),
+        meta: {
+          title: "各个区域实时展示",
+        },
       },
     ],
   },
