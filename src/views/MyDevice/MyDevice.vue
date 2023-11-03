@@ -81,7 +81,7 @@ export default {
     jump(id) {
       // console.log(id);
       this.$router.push({
-        path: "/device/detail",
+        path: "/device/areaShow",
         query: { id },
       });
     },
@@ -94,9 +94,11 @@ export default {
         success: (res) => {
           let result = res.resultStr;
           let devName = "";
-          if (result.indexOf("devN=") >= 0) {
-            devName = result.split("devN=")[1];
-            this.bindDev(devName);
+          let productId = "";
+          if (result.indexOf("devName=") >= 0) {
+            productId = result.split("&")[0].split("productId=")[1]
+            devName = result.split("&")[1].split("devName=")[1];
+            this.bindDev(productId,devName);
           } else {
             Toast.fail("请扫正确的设备码");
           }
@@ -107,8 +109,8 @@ export default {
         },
       });
     },
-    bindDev(name) {
-      this.$request(bindDevice, { openid: this.openid, deviceName: name }).then(
+    bindDev(productId,name) {
+      this.$request(bindDevice, { openid: this.openid, productId,deviceName: name }).then(
         (res) => {
           if (res.data.code == 1000) {
             Toast.success("设备添加成功");

@@ -7,6 +7,7 @@
   <div>
     <div class="GradeDetail-div">
       <div class="GradeDetail-list">
+        <h3>{{ deviceName }}</h3>
         <h3>各个区域实时展示</h3>
         <h5>Area Scores</h5>
         <div class="toothImg">
@@ -19,7 +20,7 @@
               v-model="currentLeftTopRate"
               :stroke-width="60"
               size="40px"
-              :text="`${scoreDetail.split(',')[0]}`"
+              :text="`${detailData.detailed.Value.split(',')[0]}`"
               color="#5e76ff"
             />
             <p>左牙上区得分</p>
@@ -29,7 +30,7 @@
               v-model="currentRightTopRate"
               :stroke-width="60"
               size="40px"
-              :text="`${scoreDetail.split(',')[1]}`"
+              :text="`${detailData.detailed.Value.split(',')[1]}`"
               color="#5e76ff"
             />
             <p>右牙上区得分</p>
@@ -39,7 +40,7 @@
               v-model="currentLeftBottomRate"
               :stroke-width="60"
               size="40px"
-              :text="`${scoreDetail.split(',')[2]}`"
+              :text="`${detailData.detailed.Value.split(',')[2]}`"
               color="#5e76ff"
             />
             <p>左牙下区得分</p>
@@ -49,7 +50,7 @@
               v-model="currentRightBottomRate"
               :stroke-width="60"
               size="40px"
-              :text="`${scoreDetail.split(',')[3]}`"
+              :text="`${detailData.detailed.Value.split(',')[3]}`"
               color="#5e76ff"
             />
             <p>右牙下区得分</p>
@@ -62,42 +63,123 @@
       <div class="GradeDetail-grade">
         <div class="Grade-time">
           <p>本次刷牙时间 Time</p>
-          <p class="GradeTime-btn">{{ time }}</p>
+          <p class="GradeTime-btn">
+            {{
+              `${$dayjs
+                .unix(detailData.date.Value)
+                .format("YYYY-MM-DD HH:mm:ss")}`
+            }}
+          </p>
         </div>
         <div class="Grade-grade">
           <p>本次刷牙成绩 Scores</p>
-          <p class="GradeTime-btn">{{ score }}分</p>
+          <p class="GradeTime-btn">{{ detailData.result.Value }}分</p>
         </div>
       </div>
+      <div class="GradeDetail-grade" style="margin-bottom: 100px;">
+        <div class="Grade-time">
+          <p>电池电量 %</p>
+          <p class="GradeTime-btn">{{ detailData.battery.Value }}%</p>
+        </div>
+        <div class="Grade-grade">
+          <p>牙刷更换时间 Days</p>
+          <p class="GradeTime-btn">{{ detailData.oldDate.value }}天</p>
+        </div>
+      </div>
+    </div>
+    <div class="van-contact-list__bottom fotbtn">
+      <van-button
+        @click="deleteDevice"
+        type="danger"
+        class="van-contact-list__add"
+        size="large"
+        round
+        block
+        >删除设备</van-button
+      >
     </div>
   </div>
 </template>
 <script>
+import { deviceProperties, unbindDevice } from "@/api/Device";
+import { Dialog, Toast } from "vant";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      currentRightBottomRate: 0,
-      currentLeftBottomRate: 0,
-      currentLeftTopRate: 0,
-      currentRightTopRate: 0,
+      // currentRightBottomRate: 0,
+      // currentLeftBottomRate: 0,
+      // currentLeftTopRate: 0,
+      // currentRightTopRate: 0,
+      detailData: {},
     };
   },
   computed: {
-    scoreDetail() {
-      return this.$route.query.scoreDetail;
+    // scoreDetail() {
+    //   return this.$route.query.scoreDetail;
+    // },
+    // time() {
+    //   return this.$route.query.time;
+    // },
+    // score() {
+    //   return this.$route.query.score;
+    // },
+    deviceName() {
+      return this.$route.query.id;
     },
-    time() {
-      return this.$route.query.time;
+    ...mapGetters(["openid"]),
+  },
+  methods: {
+    getDetail() {
+      this.$request(deviceProperties, {
+        openid: this.openid,
+        deviceName: this.deviceName,
+      }).then((res) => {
+        this.detailData = res.data.data;
+        if (this.detailData) {
+          if (this.detailData.oldDate.Value) {
+            let a1 = this.$dayjs(new Date()).unix();
+            let a2 = this.detailData.oldDate.Value;
+            let day = parseInt((a1 - a2) / (60 * 60 * 24));
+            let days = 90 - day;
+            this.detailData.oldDate.value = days;
+          }
+          this.currentLeftTopRate = this.detailData.detailed.Value.split(",")[0];
+          this.currentRightTopRate = this.detailData.detailed.Value.split(",")[1];
+          this.currentLeftBottomRate = this.detailData.detailed.Value.split(",")[2];
+          this.currentRightBottomRate = this.detailData.detailed.Value.split(",")[3];
+        }
+      });
     },
-    score() {
-      return this.$route.query.score;
+    deleteDevice() {
+      Dialog.confirm({
+        title: "删除设备",
+        message:
+          "一旦点击确认后，设备将会被删除，后续将无法在公众号内查看设备信息，以及接收不到设备相关的信息推送",
+      })
+        .then(() => {
+          // on confirm
+          this.$request(unbindDevice, {
+            openid: this.openid,
+            deviceName: this.deviceName,
+          }).then(() => {
+            Toast.success("设备删除成功");
+            this.getDeviceList();
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
     },
   },
-  mounted() {
-    this.currentLeftTopRate = this.scoreDetail.split(",")[0];
-    this.currentRightTopRate = this.scoreDetail.split(",")[1];
-    this.currentLeftBottomRate = this.scoreDetail.split(",")[2];
-    this.currentRightBottomRate = this.scoreDetail.split(",")[3];
+  // mounted() {
+  //   this.currentLeftTopRate = this.scoreDetail.split(",")[0];
+  //   this.currentRightTopRate = this.scoreDetail.split(",")[1];
+  //   this.currentLeftBottomRate = this.scoreDetail.split(",")[2];
+  //   this.currentRightBottomRate = this.scoreDetail.split(",")[3];
+  // },
+  created() {
+    this.getDetail();
   },
 };
 </script>
@@ -116,33 +198,9 @@ export default {
   bottom: 0;
   background: #f7f6fa;
 }
-.headImg {
-  width: 80px;
-  height: 80px;
-  border-radius: 40px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 38px;
-  margin: auto;
-  border: 1px solid #fff;
-  z-index: 10;
-}
-.GradeDetail-nickName {
-  width: 100%;
-  height: 30px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 120px;
-  margin: auto;
-  text-align: center;
-  color: #000;
-  z-index: 30;
-}
 .GradeDetail-list {
   width: 300px;
-  height: 366px;
+  height: 376px;
   background: #fff;
   border-radius: 20px;
   position: relative;
@@ -234,7 +292,7 @@ h5 {
 
 .GradeDetail-hint {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 10px;
   padding: 10px 40px;
   color: #5458fa;
   font-size: 12px;
@@ -247,7 +305,7 @@ h5 {
   margin: 10px auto 0;
   display: flex;
   justify-content: space-between;
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 .Grade-time,
 .Grade-grade {
@@ -270,5 +328,8 @@ h5 {
   margin: 0 auto;
   color: #fff;
   font-size: 12px;
+}
+.fotbtn {
+  bottom: calc(20px + env(safe-area-inset-bottom));
 }
 </style>
