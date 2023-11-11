@@ -64,26 +64,28 @@
         <div class="Grade-time">
           <p>本次刷牙时间 Time</p>
           <p class="GradeTime-btn">
-            {{
-              `${$dayjs
-                .unix(detailData.date.Value)
-                .format("YYYY-MM-DD HH:mm:ss")}`
-            }}
+            {{ date }}
           </p>
         </div>
         <div class="Grade-grade">
           <p>本次刷牙成绩 Scores</p>
-          <p class="GradeTime-btn">{{ detailData.result.Value }}分</p>
+          <p class="GradeTime-btn">
+            {{ detailData.result ? detailData.result.Value : "-" }}分
+          </p>
         </div>
       </div>
-      <div class="GradeDetail-grade" style="margin-bottom: 100px;">
+      <div class="GradeDetail-grade" style="margin-bottom: 100px">
         <div class="Grade-time">
           <p>电池电量 %</p>
-          <p class="GradeTime-btn">{{ detailData.battery.Value }}%</p>
+          <p class="GradeTime-btn">
+            {{ detailData.battery ? detailData.battery.Value : "-" }}%
+          </p>
         </div>
         <div class="Grade-grade">
           <p>牙刷更换时间 Days</p>
-          <p class="GradeTime-btn">{{ detailData.oldDate.value }}天</p>
+          <p class="GradeTime-btn">
+            {{ detailData.oldDate ? detailData.oldDate.value : "-" }}天
+          </p>
         </div>
       </div>
     </div>
@@ -112,6 +114,7 @@ export default {
       // currentLeftTopRate: 0,
       // currentRightTopRate: 0,
       detailData: {},
+      date: "",
     };
   },
   computed: {
@@ -144,10 +147,28 @@ export default {
             let days = 90 - day;
             this.detailData.oldDate.value = days;
           }
-          this.currentLeftTopRate = this.detailData.detailed.Value.split(",")[0];
-          this.currentRightTopRate = this.detailData.detailed.Value.split(",")[1];
-          this.currentLeftBottomRate = this.detailData.detailed.Value.split(",")[2];
-          this.currentRightBottomRate = this.detailData.detailed.Value.split(",")[3];
+          if (this.detailData.date) {
+            this.date = this.$dayjs
+              .unix(this.detailData.date.Value)
+              .format("YYYY-MM-DD HH:mm:ss");
+          } else {
+            this.date = "";
+          }
+          if (this.detailData.detailed) {
+            this.currentLeftTopRate =
+              this.detailData.detailed.Value.split(",")[0];
+            this.currentRightTopRate =
+              this.detailData.detailed.Value.split(",")[1];
+            this.currentLeftBottomRate =
+              this.detailData.detailed.Value.split(",")[2];
+            this.currentRightBottomRate =
+              this.detailData.detailed.Value.split(",")[3];
+          } else {
+            this.currentLeftTopRate = 0;
+            this.currentRightTopRate = 0;
+            this.currentLeftBottomRate = 0;
+            this.currentRightBottomRate = 0;
+          }
         }
       });
     },
@@ -164,7 +185,7 @@ export default {
             deviceName: this.deviceName,
           }).then(() => {
             Toast.success("设备删除成功");
-            this.getDeviceList();
+            this.$router.push("/device/list");
           });
         })
         .catch(() => {
@@ -330,6 +351,6 @@ h5 {
   font-size: 12px;
 }
 .fotbtn {
-  bottom: calc(20px + env(safe-area-inset-bottom));
+  bottom: calc(0px + env(safe-area-inset-bottom));
 }
 </style>

@@ -187,6 +187,6 @@ export default {
   white-space: nowrap;
 }
 .fotbtn{
-  bottom: calc(20px + env(safe-area-inset-bottom));
+  bottom: calc(0px + env(safe-area-inset-bottom));
 }
 </style>
