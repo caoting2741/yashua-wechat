@@ -130,12 +130,16 @@ export default {
     deviceName() {
       return this.$route.query.id;
     },
+    productId(){
+      return this.$route.query.pid;
+    },
     ...mapGetters(["openid"]),
   },
   methods: {
     getDetail() {
       this.$request(deviceProperties, {
         openid: this.openid,
+        productId:this.productId,
         deviceName: this.deviceName,
       }).then((res) => {
         this.detailData = res.data.data;
@@ -182,6 +186,7 @@ export default {
           // on confirm
           this.$request(unbindDevice, {
             openid: this.openid,
+            productId:this.productId,
             deviceName: this.deviceName,
           }).then(() => {
             Toast.success("设备删除成功");
