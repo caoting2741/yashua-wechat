@@ -20,7 +20,7 @@
               v-model="currentLeftTopRate"
               :stroke-width="60"
               size="40px"
-              :text="`${detailData.detailed.Value.split(',')[0]}`"
+              :text="currentLeftTopRate"
               color="#5e76ff"
             />
             <p>左牙上区得分</p>
@@ -30,7 +30,7 @@
               v-model="currentRightTopRate"
               :stroke-width="60"
               size="40px"
-              :text="`${detailData.detailed.Value.split(',')[1]}`"
+              :text="currentRightTopRate"
               color="#5e76ff"
             />
             <p>右牙上区得分</p>
@@ -40,7 +40,7 @@
               v-model="currentLeftBottomRate"
               :stroke-width="60"
               size="40px"
-              :text="`${detailData.detailed.Value.split(',')[2]}`"
+              :text="currentLeftBottomRate"
               color="#5e76ff"
             />
             <p>左牙下区得分</p>
@@ -50,7 +50,7 @@
               v-model="currentRightBottomRate"
               :stroke-width="60"
               size="40px"
-              :text="`${detailData.detailed.Value.split(',')[3]}`"
+              :text="currentRightBottomRate"
               color="#5e76ff"
             />
             <p>右牙下区得分</p>

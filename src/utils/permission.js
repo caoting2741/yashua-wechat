@@ -31,8 +31,8 @@ router.beforeEach((to, from, next) => {
 const getCode = () => {
   var url = location.search;
   var code = ""; 
-  if (url.indexOf("?code=") != -1) {
-    var split = url.split("?code=");
+  if (url.indexOf("code=") != -1) {
+    var split = url.split("code=");
     code = split[1].split("&")[0];
   }
 
