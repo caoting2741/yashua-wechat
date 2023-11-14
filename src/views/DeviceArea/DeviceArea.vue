@@ -131,12 +131,16 @@ export default {
     deviceName() {
       return this.$route.query.id;
     },
+    productId() {
+      return this.$route.query.pid;
+    },
     ...mapGetters(["openid"]),
   },
   methods: {
     getDetail() {
       this.$request(deviceProperties, {
         openid: this.openid,
+        productId: this.productId,
         deviceName: this.deviceName,
       }).then((res) => {
         this.detailData = res.data.data;
@@ -164,7 +168,7 @@ export default {
               this.detailData.detailed.Value.split(",")[2];
             this.currentRightBottomRate =
               this.detailData.detailed.Value.split(",")[3];
-          }else{
+          } else {
             this.currentLeftTopRate = 0;
             this.currentRightTopRate = 0;
             this.currentLeftBottomRate = 0;
@@ -183,10 +187,11 @@ export default {
           // on confirm
           this.$request(unbindDevice, {
             openid: this.openid,
+            productId: this.productId,
             deviceName: this.deviceName,
           }).then(() => {
             Toast.success("设备删除成功");
-            this.$router.push('/device/list')
+            this.$router.push("/device/list");
           });
         })
         .catch(() => {

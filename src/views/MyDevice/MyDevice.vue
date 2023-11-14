@@ -13,7 +13,7 @@
             <van-image
               class="imgS"
               :src="require('@/assets/product.png')"
-              @click="jump(item.DeviceName)"
+              @click="jump(item)"
             />
             <span class="imgW">
               <span style="margin-right: 0.3rem"
@@ -78,11 +78,11 @@ export default {
           }
         });
     },
-    jump(id) {
+    jump({ ProductId, DeviceName }) {
       // console.log(id);
       this.$router.push({
         path: "/device/areaShow",
-        query: { id },
+        query: { pid: ProductId, id: DeviceName },
       });
     },
 
@@ -96,32 +96,34 @@ export default {
           let devName = "";
           let productId = "";
           if (result.indexOf("devName=") >= 0) {
-            productId = result.split("&")[0].split("productId=")[1]
+            productId = result.split("&")[0].split("productId=")[1];
             devName = result.split("&")[1].split("devName=")[1];
-            this.bindDev(productId,devName);
+            this.bindDev(productId, devName);
           } else {
             Toast.fail("请扫正确的设备码");
           }
         },
         fail: (err) => {
-          console.log(err);          
+          console.log(err);
           Toast.fail(err.errMsg);
         },
       });
     },
-    bindDev(productId,name) {
-      this.$request(bindDevice, { openid: this.openid, productId,deviceName: name }).then(
-        (res) => {
-          if (res.data.code == 1000) {
-            Toast.success("设备添加成功");
-            this.getDeviceList();
-          } else {
-            Toast.fail(res.data.msg);
-          }
+    bindDev(productId, name) {
+      this.$request(bindDevice, {
+        openid: this.openid,
+        productId,
+        deviceName: name,
+      }).then((res) => {
+        if (res.data.code == 1000) {
+          Toast.success("设备添加成功");
+          this.getDeviceList();
+        } else {
+          Toast.fail(res.data.msg);
         }
-      );
+      });
     },
-    
+
     async getWxJssdkConf() {
       const res = await this.$request(getSdkConfig);
       if (res.data.code == 1000) {
@@ -161,7 +163,6 @@ export default {
       this.getWxJssdkConf();
     });
   },
-  
 };
 </script>
 <style>
@@ -186,7 +187,7 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.fotbtn{
+.fotbtn {
   bottom: calc(0px + env(safe-area-inset-bottom));
 }
 </style>
