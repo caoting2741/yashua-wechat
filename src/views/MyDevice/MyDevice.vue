@@ -12,7 +12,7 @@
           <van-grid-item v-for="item in deviceList" :key="item.DevicePsk">
             <van-image
               class="imgS"
-              :src="require('@/assets/product.png')"
+              :src="require('@/assets/product_otooth.png')"
               @click="jump(item)"
             />
             <span class="imgW">
