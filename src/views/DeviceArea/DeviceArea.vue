@@ -17,7 +17,7 @@
               v-model="currentLeftTopRate"
               :stroke-width="60"
               size="40px"
-              :text="currentRightBottomRate"
+              :text="currentLeftTopRate"
               color="#A77CC4"
               layer-color="#E5D2FF"
             />
