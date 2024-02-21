@@ -11,15 +11,16 @@
         <h3>各个区域实时展示</h3>
         <h5>Area Scores</h5>
         <div class="toothImg">
-          <img :src="require('@/assets/teethArea.png')" alt="" />
+          <img :src="require('@/assets/teethAreaNew.png')" alt="" />
           <div class="Grade-leftTop">
             <van-circle
               v-model="currentLeftTopRate"
               :stroke-width="60"
               size="40px"
               :text="currentLeftTopRate"
-              color="#A77CC4"
-              layer-color="#E5D2FF"
+              color="#89ab46"
+              layer-color="#bedd9b"
+              class="lft"
             />
             <p>左牙上区得分</p>
           </div>
@@ -29,8 +30,9 @@
               :stroke-width="60"
               size="40px"
               :text="currentRightTopRate"
-              color="#A77CC4"
-              layer-color="#E5D2FF"
+              color="#009adc"
+              layer-color="#9bc7eb"
+              class="rgit"
             />
             <p>右牙上区得分</p>
           </div>
@@ -40,8 +42,9 @@
               :stroke-width="60"
               size="40px"
               :text="currentLeftBottomRate"
-              color="#A77CC4"
-              layer-color="#E5D2FF"
+              color="#f47321"
+              layer-color="#fcc594"
+              class="lfb"
             />
             <p>左牙下区得分</p>
           </div>
@@ -51,8 +54,9 @@
               :stroke-width="60"
               size="40px"
               :text="currentRightBottomRate"
-              color="#A77CC4"
-              layer-color="#E5D2FF"
+              color="#ef4d55"
+              layer-color="#fac4bc"
+              class="rgib"
             />
             <p>右牙下区得分</p>
           </div>
@@ -85,7 +89,13 @@
         <div class="Grade-grade">
           <p>牙刷更换时间 DAYS</p>
           <p class="GradeTime-btn">
-            {{ detailData.oldDate ? detailData.oldDate.value : "-" }}天
+            {{
+              detailData.oldDate
+                ? detailData.oldDate.value > 0
+                  ? detailData.oldDate.value
+                  : 0
+                : "-"
+            }}天
           </p>
         </div>
       </div>
@@ -210,7 +220,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .GradeDetail-div {
   width: 100%;
   min-height: 100vh;
@@ -321,13 +331,13 @@ h5 {
   text-align: center;
   margin-top: 10px;
   padding: 10px 40px;
-  color: #a77cc4;
+  color: #f47321;
   font-size: 12px;
 }
 .GradeDetail-grade {
   width: 300px;
   height: 96px;
-  background: #e5d2ff;
+  background: #fde0c6;
   border-radius: 20px;
   margin: 10px auto 0;
   display: flex;
@@ -343,14 +353,14 @@ h5 {
 .Grade-grade p:first-child {
   margin-bottom: 12px;
   font-size: 14px;
-  color: #a77cc4;
+  color: #f47321;
 }
 .GradeTime-btn {
   width: 130px;
   height: 40px;
   border-radius: 10px;
   line-height: 30px;
-  background: #c7a3ef;
+  background: #fcc594;
   text-align: center;
   line-height: 40px;
   margin: 0 auto;
@@ -359,5 +369,25 @@ h5 {
 }
 .fotbtn {
   bottom: calc(0px + env(safe-area-inset-bottom));
+}
+.lft :deep(.van-circle__text) {
+  color: #89ab46;
+  font-size: 18px;
+  font-weight: bold;
+}
+.rgit :deep(.van-circle__text) {
+  color: #009adc;
+  font-size: 18px;
+  font-weight: bold;
+}
+.lfb :deep(.van-circle__text) {
+  color: #f47321;
+  font-size: 18px;
+  font-weight: bold;
+}
+.rgib :deep(.van-circle__text) {
+  color: #ef4d55;
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>
