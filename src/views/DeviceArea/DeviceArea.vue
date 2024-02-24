@@ -7,7 +7,10 @@
   <div>
     <div class="GradeDetail-div">
       <div class="GradeDetail-list">
-        <h3>{{ deviceName }}</h3>
+        <h3 style="display: flex; justify-content: center; align-items: center">
+          <span style="margin-right: 5px">{{ deviceName }}</span>
+          <van-icon name="edit" @click="changeName" />
+        </h3>
         <h3>各个区域实时展示</h3>
         <h5>Area Scores</h5>
         <div class="toothImg">
@@ -111,6 +114,26 @@
         >删除设备</van-button
       >
     </div>
+    <!-- 修改昵称弹框 -->
+    <van-dialog
+      v-model="show"
+      :before-close="beforeClose"
+      title="修改设备昵称"
+      @cancel="cancelD"
+      confirm-button-color="#C7A3EF"
+      @confirm="confirmClick()"
+      show-cancel-button
+    >
+      <van-form ref="modifyDevNameRef" :key="formKey">
+        <van-field
+          name="devName"
+          v-model="deviceName"
+          label="设备昵称"
+          placeholder="设备昵称"
+          :rules="[{ required: true, message: '请输入设备昵称' }]"
+        />
+      </van-form>
+    </van-dialog>
   </div>
 </template>
 <script>
@@ -126,6 +149,8 @@ export default {
       currentRightTopRate: 0,
       detailData: {},
       date: "",
+      show: false,
+      formKey: 0,
     };
   },
   computed: {
@@ -147,6 +172,41 @@ export default {
     ...mapGetters(["openid"]),
   },
   methods: {
+    changeName() {
+      this.show = true;
+    },
+    beforeClose() {
+      new Promise((resolve) => {
+        setTimeout(() => {
+          // 拦截确认操作
+          console.log(222);
+          resolve(false);
+        }, 0);
+      });
+    },
+    cancelD() {
+      this.formKey++;
+      this.show = false;
+    },
+    confirmClick() {
+      this.$refs.modifyDevNameRef
+        .validate()
+        .then(() => {
+          // sdkRequest("AppUpdateDeviceInFamily", {
+          //   ProductId: sdk.productId,
+          //   DeviceName: sdk.deviceName,
+          //   AliasName: deviceName.value,
+          // }).then(() => {
+          //   deviceInfo.value.AliasName = deviceName.value;
+          //   Toast.success(`设备昵称修改为：${deviceName.value}`);
+          // });
+        })
+        .catch(() => {
+          // show.value = false;
+          console.log("validate is error");
+        });
+      this.show = false;
+    },
     getDetail() {
       this.$request(deviceProperties, {
         openid: this.openid,
@@ -228,6 +288,7 @@ export default {
   padding-top: 10px;
   overflow: auto;
 }
+
 .GradeDetail-bg {
   position: absolute;
   width: 100%;
@@ -235,6 +296,7 @@ export default {
   bottom: 0;
   background: #f7f6fa;
 }
+
 .GradeDetail-list {
   width: 300px;
   height: 376px;
@@ -244,20 +306,24 @@ export default {
   margin: auto;
   padding-top: 10px;
 }
+
 h3 {
   text-align: center;
   font-size: 15px;
 }
+
 h5 {
   text-align: center;
   margin-top: 5px;
   font-size: 12px;
 }
+
 .toothImg {
   width: 100%;
   height: 208px;
   position: relative;
 }
+
 .toothImg img {
   width: 58%;
   position: absolute;
@@ -265,6 +331,7 @@ h5 {
   right: 0;
   margin: auto;
 }
+
 .Grade-leftTop {
   position: absolute;
   left: 0;
@@ -274,6 +341,7 @@ h5 {
   align-items: center;
   flex-direction: column;
 }
+
 .Grade-leftTop p {
   font-size: 12px;
   padding-left: 5px;
@@ -289,6 +357,7 @@ h5 {
   align-items: center;
   flex-direction: column;
 }
+
 .Grade-rightTop p {
   font-size: 12px;
   padding-left: 5px;
@@ -305,6 +374,7 @@ h5 {
   align-items: center;
   flex-direction: column;
 }
+
 .Grade-leftBottom p {
   font-size: 12px;
   padding-left: 5px;
@@ -321,6 +391,7 @@ h5 {
   align-items: center;
   flex-direction: column;
 }
+
 .Grade-rightBottom p {
   font-size: 12px;
   padding-left: 5px;
@@ -334,6 +405,7 @@ h5 {
   color: #f47321;
   font-size: 12px;
 }
+
 .GradeDetail-grade {
   width: 300px;
   height: 96px;
@@ -344,17 +416,20 @@ h5 {
   justify-content: space-between;
   /* padding-top: 10px; */
 }
+
 .Grade-time,
 .Grade-grade {
   width: 50%;
   text-align: center;
 }
+
 .Grade-time,
 .Grade-grade p:first-child {
   margin-bottom: 12px;
   font-size: 14px;
   color: #f47321;
 }
+
 .GradeTime-btn {
   width: 130px;
   height: 40px;
@@ -367,24 +442,29 @@ h5 {
   color: #fff;
   font-size: 12px;
 }
+
 .fotbtn {
   bottom: calc(0px + env(safe-area-inset-bottom));
 }
+
 .lft :deep(.van-circle__text) {
   color: #89ab46;
   font-size: 18px;
   font-weight: bold;
 }
+
 .rgit :deep(.van-circle__text) {
   color: #009adc;
   font-size: 18px;
   font-weight: bold;
 }
+
 .lfb :deep(.van-circle__text) {
   color: #f47321;
   font-size: 18px;
   font-weight: bold;
 }
+
 .rgib :deep(.van-circle__text) {
   color: #ef4d55;
   font-size: 18px;
