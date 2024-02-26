@@ -25,3 +25,11 @@ export const deviceProperties = {
   url: `${devicePrefix}/user/devices/properties`,
   method: "get",
 };
+export const deviceAliasName = {
+  url: `${devicePrefix}/user/device/aliasName`,
+  method: "post",
+};
+export const deviceAliasNameGet = {
+  url: `${devicePrefix}/user/device/aliasName/get`,
+  method: "post",
+};
