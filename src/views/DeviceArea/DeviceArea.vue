@@ -8,7 +8,7 @@
     <div class="GradeDetail-div">
       <div class="GradeDetail-list">
         <h3 style="display: flex; justify-content: center; align-items: center">
-          <span style="margin-right: 5px">{{ deviceName }}</span>
+          <span style="margin-right: 5px">{{ aliasName||deviceName }}</span>
           <van-icon name="edit" @click="changeName" />
         </h3>
         <h3>各个区域实时展示</h3>
@@ -120,14 +120,14 @@
       :before-close="beforeClose"
       title="修改设备昵称"
       @cancel="cancelD"
-      confirm-button-color="#C7A3EF"
+      confirm-button-color="#f47321"
       @confirm="confirmClick()"
       show-cancel-button
     >
       <van-form ref="modifyDevNameRef" :key="formKey">
         <van-field
           name="devName"
-          v-model="deviceName"
+          v-model="aliasName"
           label="设备昵称"
           placeholder="设备昵称"
           :rules="[{ required: true, message: '请输入设备昵称' }]"
@@ -137,7 +137,7 @@
   </div>
 </template>
 <script>
-import { deviceProperties, unbindDevice } from "@/api/Device";
+import { deviceProperties, unbindDevice,deviceAliasName,deviceAliasNameGet } from "@/api/Device";
 import { Dialog, Toast } from "vant";
 import { mapGetters } from "vuex";
 export default {
@@ -151,6 +151,7 @@ export default {
       date: "",
       show: false,
       formKey: 0,
+      aliasName:''
     };
   },
   computed: {
@@ -175,14 +176,12 @@ export default {
     changeName() {
       this.show = true;
     },
-    beforeClose() {
-      new Promise((resolve) => {
-        setTimeout(() => {
-          // 拦截确认操作
-          console.log(222);
-          resolve(false);
-        }, 0);
-      });
+    beforeClose(action, done) {
+      if (action === "confirm") {
+        setTimeout(done, 1000);
+      } else {
+        done();
+      }
     },
     cancelD() {
       this.formKey++;
@@ -192,20 +191,31 @@ export default {
       this.$refs.modifyDevNameRef
         .validate()
         .then(() => {
-          // sdkRequest("AppUpdateDeviceInFamily", {
-          //   ProductId: sdk.productId,
-          //   DeviceName: sdk.deviceName,
-          //   AliasName: deviceName.value,
-          // }).then(() => {
-          //   deviceInfo.value.AliasName = deviceName.value;
-          //   Toast.success(`设备昵称修改为：${deviceName.value}`);
-          // });
+          this.$request(deviceAliasName,{
+            openid: this.openid,
+            productId: this.productId,
+            deviceName: this.deviceName,
+            aliasName:this.aliasName
+          }).then(()=>{
+            Toast.success(`设备昵称修改为：${this.aliasName}`);
+            this.getAliasName()
+          })
+          
         })
         .catch(() => {
           // show.value = false;
           console.log("validate is error");
         });
       this.show = false;
+    },
+    getAliasName(){
+      this.$request(deviceAliasNameGet,{
+        openid: this.openid,
+        productId: this.productId,
+        deviceName: this.deviceName,
+      }).then(res=>{
+        this.aliasName = res.data.data.aliasName
+      })
     },
     getDetail() {
       this.$request(deviceProperties, {
@@ -247,6 +257,7 @@ export default {
         }
       });
     },
+ 
     deleteDevice() {
       Dialog.confirm({
         title: "删除设备",
@@ -277,6 +288,7 @@ export default {
   // },
   created() {
     this.getDetail();
+    this.getAliasName();
   },
 };
 </script>
