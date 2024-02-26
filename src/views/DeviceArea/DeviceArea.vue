@@ -119,6 +119,7 @@
           v-model="aliasName"
           label="设备昵称"
           placeholder="设备昵称"
+          maxLength="20"
           :rules="[{ required: true, message: '请输入设备昵称' }]"
         />
       </van-form>
