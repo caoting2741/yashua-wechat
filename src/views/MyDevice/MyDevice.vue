@@ -17,7 +17,7 @@
             />
             <span class="imgW">
               <span style="margin-right: 0.3rem"
-                ><span class="devName">{{ item.DeviceName }}</span></span
+                ><span class="devName">{{ item.AliasName || item.DeviceName }}</span></span
               >
               <!-- <van-icon
                 name="delete-o"
@@ -186,6 +186,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
 }
 .fotbtn {
   bottom: calc(0px + env(safe-area-inset-bottom));

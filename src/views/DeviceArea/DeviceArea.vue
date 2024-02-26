@@ -7,7 +7,10 @@
   <div>
     <div class="GradeDetail-div">
       <div class="GradeDetail-list">
-        <h3>{{ deviceName }}</h3>
+        <h3 style="display: flex; justify-content: center; align-items: center">
+          <span style="margin-right: 5px">{{ aliasName||deviceName }}</span>
+          <van-icon name="edit" @click="changeName" />
+        </h3>
         <h3>各个区域实时展示</h3>
         <h5>Area Scores</h5>
         <div class="toothImg">
@@ -101,10 +104,31 @@
         >删除设备</van-button
       >
     </div>
+    <!-- 修改昵称弹框 -->
+    <van-dialog
+      v-model="show"
+      :before-close="beforeClose"
+      title="修改设备昵称"
+      @cancel="cancelD"
+      confirm-button-color="#C7A3EF"
+      @confirm="confirmClick()"
+      show-cancel-button
+    >
+      <van-form ref="modifyDevNameRef" :key="formKey">
+        <van-field
+          name="devName"
+          v-model="aliasName"
+          label="设备昵称"
+          placeholder="设备昵称"
+          maxlength="20"
+          :rules="[{ required: true, message: '请输入设备昵称' }]"
+        />
+      </van-form>
+    </van-dialog>
   </div>
 </template>
 <script>
-import { deviceProperties, unbindDevice } from "@/api/Device";
+import { deviceProperties, unbindDevice,deviceAliasName,deviceAliasNameGet } from "@/api/Device";
 import { Dialog, Toast } from "vant";
 import { mapGetters } from "vuex";
 export default {
@@ -116,6 +140,9 @@ export default {
       currentRightTopRate: 0,
       detailData: {},
       date: "",
+      show: false,
+      formKey: 0,
+      aliasName:''
     };
   },
   computed: {
@@ -137,6 +164,50 @@ export default {
     ...mapGetters(["openid"]),
   },
   methods: {
+    changeName() {
+      this.show = true;
+    },
+    beforeClose(action, done) {
+      if (action === "confirm") {
+        setTimeout(done, 1000);
+      } else {
+        done();
+      }
+    },
+    cancelD() {
+      this.formKey++;
+      this.show = false;
+    },
+    confirmClick() {
+      this.$refs.modifyDevNameRef
+        .validate()
+        .then(() => {
+          this.$request(deviceAliasName,{
+            openid: this.openid,
+            productId: this.productId,
+            deviceName: this.deviceName,
+            aliasName:this.aliasName
+          }).then(()=>{
+            Toast.success(`设备昵称修改为：${this.aliasName}`);
+            this.getAliasName()
+          })
+          
+        })
+        .catch(() => {
+          // show.value = false;
+          console.log("validate is error");
+        });
+      this.show = false;
+    },
+    getAliasName(){
+      this.$request(deviceAliasNameGet,{
+        openid: this.openid,
+        productId: this.productId,
+        deviceName: this.deviceName,
+      }).then(res=>{
+        this.aliasName = res.data.data.aliasName
+      })
+    },
     getDetail() {
       this.$request(deviceProperties, {
         openid: this.openid,
@@ -207,6 +278,7 @@ export default {
   // },
   created() {
     this.getDetail();
+    this.getAliasName();
   },
 };
 </script>
