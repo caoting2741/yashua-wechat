@@ -8,7 +8,7 @@
     <div class="GradeDetail-div">
       <div class="GradeDetail-list">
         <h3 style="display: flex; justify-content: center; align-items: center">
-          <span style="margin-right: 5px">{{ aliasName||deviceName }}</span>
+          <span style="margin-right: 5px">{{ aliasName || deviceName }}</span>
           <van-icon name="edit" @click="changeName" />
         </h3>
         <h3>各个区域实时展示</h3>
@@ -128,7 +128,12 @@
   </div>
 </template>
 <script>
-import { deviceProperties, unbindDevice,deviceAliasName,deviceAliasNameGet } from "@/api/Device";
+import {
+  deviceProperties,
+  unbindDevice,
+  deviceAliasName,
+  deviceAliasNameGet,
+} from "@/api/Device";
 import { Dialog, Toast } from "vant";
 import { mapGetters } from "vuex";
 export default {
@@ -142,7 +147,7 @@ export default {
       date: "",
       show: false,
       formKey: 0,
-      aliasName:''
+      aliasName: "",
     };
   },
   computed: {
@@ -182,16 +187,15 @@ export default {
       this.$refs.modifyDevNameRef
         .validate()
         .then(() => {
-          this.$request(deviceAliasName,{
+          this.$request(deviceAliasName, {
             openid: this.openid,
             productId: this.productId,
             deviceName: this.deviceName,
-            aliasName:this.aliasName
-          }).then(()=>{
+            aliasName: this.aliasName,
+          }).then(() => {
             Toast.success(`设备昵称修改为：${this.aliasName}`);
-            this.getAliasName()
-          })
-          
+            this.getAliasName();
+          });
         })
         .catch(() => {
           // show.value = false;
@@ -199,14 +203,14 @@ export default {
         });
       this.show = false;
     },
-    getAliasName(){
-      this.$request(deviceAliasNameGet,{
+    getAliasName() {
+      this.$request(deviceAliasNameGet, {
         openid: this.openid,
         productId: this.productId,
         deviceName: this.deviceName,
-      }).then(res=>{
-        this.aliasName = res.data.data.aliasName
-      })
+      }).then((res) => {
+        this.aliasName = res.data.data.aliasName;
+      });
     },
     getDetail() {
       this.$request(deviceProperties, {
@@ -216,12 +220,14 @@ export default {
       }).then((res) => {
         this.detailData = res.data.data;
         if (this.detailData) {
-          if (this.detailData.oldDate.Value) {
-            let a1 = this.$dayjs(new Date()).unix();
-            let a2 = this.detailData.oldDate.Value;
-            let day = parseInt((a1 - a2) / (60 * 60 * 24));
-            let days = 90 - day;
-            this.detailData.oldDate.value = days;
+          if (this.detailData.oldDate) {
+            if (this.detailData.oldDate.Value) {
+              let a1 = this.$dayjs(new Date()).unix();
+              let a2 = this.detailData.oldDate.Value;
+              let day = parseInt((a1 - a2) / (60 * 60 * 24));
+              let days = 90 - day;
+              this.detailData.oldDate.value = days;
+            }
           }
           if (this.detailData.date) {
             this.date = this.$dayjs
