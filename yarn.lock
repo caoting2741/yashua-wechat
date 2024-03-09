@@ -6022,11 +6022,6 @@ weixin-js-sdk@^1.6.0:
   resolved "https://registry.npmmirror.com/weixin-js-sdk/-/weixin-js-sdk-1.6.0.tgz#ff50484d8118ce1208f11248cf4a1c0831577514"
   integrity sha512-3IYQH7aalJGFJrwdT3epvTdR1MboMiH7vIZ5BRL2eYOJ12BNah7csoMkmSZzkq1+l92sSq29XdTCVjCJoK2sBQ==
 
-weixin-jsapi@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmmirror.com/weixin-jsapi/-/weixin-jsapi-1.1.0.tgz#51a95a2224c59d1d8f02fddbc6de52da16b344b3"
-  integrity sha512-986drpgKs1yf8gK1A/hrdF2U5cjp/zW/7bhoL37JLoePhNiO14JqZpa+wlNslge0Hlw7gEXMTnEntFvvSXz8Bw==
-
 whatwg-fetch@^3.6.2:
   version "3.6.2"
   resolved "https://registry.npmmirror.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
