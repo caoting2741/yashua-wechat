@@ -9,7 +9,7 @@
       <div class="GradeDetail-list">
         <h3 style="display: flex; justify-content: center; align-items: center">
           <span style="margin-right: 5px">{{ aliasName || deviceName }}</span>
-          <van-icon name="edit" @click="changeName" />
+          <!-- <van-icon name="edit" @click="changeName" /> -->
         </h3>
         <h3>各个区域实时展示</h3>
         <h5>Area Scores</h5>
